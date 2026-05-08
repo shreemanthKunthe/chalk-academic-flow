@@ -10,7 +10,9 @@ export const Route = createFileRoute("/invigilator")({
 type Status = "PRESENT" | "ABSENT" | "NOT_MARKED";
 
 function LiveAttendance() {
-  const [list, setList] = useState(mockAttendance.map((s) => ({ ...s })));
+  const [list, setList] = useState<{ id: number; studentName: string; rollNo: string; status: Status }[]>(
+    mockAttendance.map((s) => ({ ...s, status: s.status as Status }))
+  );
 
   const counts = useMemo(() => {
     const c = { PRESENT: 0, ABSENT: 0, NOT_MARKED: 0 };
