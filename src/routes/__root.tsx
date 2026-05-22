@@ -74,10 +74,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CHALK — Run Exams" },
-      { name: "description", content: "CHALK is the complete exam management platform for modern colleges." },
-      { name: "author", content: "CHALK" },
-      { property: "og:title", content: "CHALK — Run Exams" },
+      { title: "COEXIST — Run Exams" },
+      { name: "description", content: "COEXIST is the complete exam management platform for modern colleges." },
+      { name: "author", content: "COEXIST" },
+      { property: "og:title", content: "COEXIST — Run Exams" },
       { property: "og:description", content: "The complete exam platform for modern colleges." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" },
       { rel: "stylesheet", href: appCss },
     ],
   }),

@@ -14,7 +14,7 @@ export default function ProtectedRoute({
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? (localStorage.getItem("chalk_role") as Role | null) : null;
+    const stored = typeof window !== "undefined" ? (localStorage.getItem("coexist_role") as Role | null) : null;
     const effective = role ?? stored;
     if (!effective) {
       navigate({ to: "/login" });

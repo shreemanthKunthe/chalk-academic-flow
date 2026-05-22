@@ -18,7 +18,7 @@ export default function Sidebar() {
   return (
     <aside className="w-[220px] shrink-0 border-r border-gray-100 bg-white min-h-screen flex flex-col">
       <div className="px-6 py-8">
-        <Link to="/" className="text-xl font-extrabold tracking-tight">CHALK</Link>
+        <Link to="/" className="text-xl font-extrabold tracking-tight">COEXIST</Link>
       </div>
       <nav className="flex-1 px-6 space-y-4">
         {items.map((it) => {

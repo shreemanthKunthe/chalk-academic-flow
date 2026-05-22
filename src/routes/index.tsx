@@ -57,7 +57,7 @@ function Landing() {
               <span className="text-gray-400">every single exam</span>
             </h1>
             <p className="mt-6 text-[15px] text-gray-500 max-w-md">
-              Chalk handles hall assignment, live attendance, marks entry, and results — all in one place, nothing on paper.
+              Coexist handles hall assignment, live attendance, marks entry, and results — all in one place, nothing on paper.
             </p>
             <Link
               to="/login"
@@ -119,7 +119,7 @@ function Landing() {
         >
           Get Started
         </Link>
-        <span className="text-xs uppercase tracking-widest text-gray-400">© CHALK 2026</span>
+        <span className="text-xs uppercase tracking-widest text-gray-400">© COEXIST 2026</span>
       </section>
     </div>
   );
