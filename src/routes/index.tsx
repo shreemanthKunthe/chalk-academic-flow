@@ -104,23 +104,9 @@ function Landing() {
         </div>
       </section>
 
-      {/* Black bar */}
-      <section className="bg-black text-white py-10 px-10 text-center">
-        <p className="uppercase tracking-widest text-sm md:text-base">
-          The complete exam platform for modern colleges
-        </p>
-      </section>
-
-      {/* CTA */}
-      <section className="px-10 py-20 flex flex-col items-center gap-6">
-        <Link
-          to="/login"
-          className="bg-black text-white px-10 py-4 uppercase tracking-wider text-sm font-medium hover:opacity-90"
-        >
-          Get Started
-        </Link>
+      <footer className="px-10 py-10 flex justify-center">
         <span className="text-xs uppercase tracking-widest text-gray-400">© COEXIST 2026</span>
-      </section>
+      </footer>
     </div>
   );
 }
