@@ -11,8 +11,8 @@ function Landing() {
       <Navbar />
 
       {/* Hero — centered with floating cards */}
-      <section className="relative px-6 md:px-10 pt-8 pb-24">
-        <div className="relative mx-auto max-w-6xl rounded-3xl bg-white overflow-hidden" style={{
+      <section className="relative px-6 md:px-10 pt-8 pb-10">
+        <div className="relative mx-auto w-full rounded-3xl bg-white overflow-hidden min-h-[calc(100vh-8rem)] flex items-center justify-center" style={{
           backgroundImage: "radial-gradient(#E5E7EB 1px, transparent 1px)",
           backgroundSize: "22px 22px",
         }}>
