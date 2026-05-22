@@ -47,7 +47,7 @@ function Landing() {
           </div>
 
           {/* Center content */}
-          <div className="relative z-10 flex flex-col items-center text-center px-6 py-28 md:py-36">
+          <div className="relative z-10 flex flex-col items-center text-center px-6 py-28 md:py-40 w-full">
             <div className="w-14 h-14 bg-white border border-gray-200 shadow-sm flex items-center justify-center mb-8">
               <span className="font-extrabold text-xl tracking-tight">C</span>
             </div>
