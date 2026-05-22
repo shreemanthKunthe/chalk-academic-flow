@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth, Role } from "@/context/AuthContext";
+import Logo from "../components/Logo";
 
 export const Route = createFileRoute("/login")({
   component: Login,
@@ -26,7 +27,10 @@ function Login() {
   return (
     <div className="min-h-screen grid md:grid-cols-2 bg-white">
       <div className="hidden md:flex flex-col justify-between p-12 border-r border-gray-100">
-        <span className="text-xl font-extrabold tracking-tight">COEXIST</span>
+        <span className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight">
+          <Logo size={22} className="text-black" />
+          <span>COEXIST</span>
+        </span>
         <div>
           <h1
             className="font-extrabold leading-[0.85]"

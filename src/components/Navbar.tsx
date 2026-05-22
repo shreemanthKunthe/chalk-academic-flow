@@ -1,9 +1,13 @@
 import { Link } from "@tanstack/react-router";
+import Logo from "./Logo";
 
 export default function Navbar() {
   return (
     <header className="w-full px-10 py-6 flex items-center justify-between bg-white">
-      <Link to="/" className="text-xl font-extrabold tracking-tight">COEXIST</Link>
+      <Link to="/" className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight hover:opacity-85 transition-opacity">
+        <Logo size={22} className="text-black" />
+        <span>COEXIST</span>
+      </Link>
       <nav className="hidden md:flex items-center gap-12">
         {["EXAMS", "HALLS", "RESULTS", "REPORTS"].map((l) => (
           <a key={l} href="#" className="text-[12px] uppercase tracking-widest font-medium text-black hover:opacity-60">

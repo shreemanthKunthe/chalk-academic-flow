@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/context/AuthContext";
+import Logo from "./Logo";
 
 const items = [
   { label: "DASHBOARD", to: "/admin" },
@@ -18,7 +19,10 @@ export default function Sidebar() {
   return (
     <aside className="w-[220px] shrink-0 border-r border-gray-100 bg-white min-h-screen flex flex-col">
       <div className="px-6 py-8">
-        <Link to="/" className="text-xl font-extrabold tracking-tight">COEXIST</Link>
+        <Link to="/" className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight hover:opacity-85 transition-opacity">
+          <Logo size={22} className="text-black" />
+          <span>COEXIST</span>
+        </Link>
       </div>
       <nav className="flex-1 px-6 space-y-4">
         {items.map((it) => {
