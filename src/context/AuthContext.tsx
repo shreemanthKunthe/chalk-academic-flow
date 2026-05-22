@@ -17,21 +17,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const r = localStorage.getItem("chalk_role") as Role | null;
-    const e = localStorage.getItem("chalk_email");
+    const r = localStorage.getItem("coexist_role") as Role | null;
+    const e = localStorage.getItem("coexist_email");
     if (r) setRole(r);
     if (e) setEmail(e);
   }, []);
 
   const login = (r: Role, e: string) => {
-    localStorage.setItem("chalk_role", r);
-    localStorage.setItem("chalk_email", e);
+    localStorage.setItem("coexist_role", r);
+    localStorage.setItem("coexist_email", e);
     setRole(r);
     setEmail(e);
   };
   const logout = () => {
-    localStorage.removeItem("chalk_role");
-    localStorage.removeItem("chalk_email");
+    localStorage.removeItem("coexist_role");
+    localStorage.removeItem("coexist_email");
     setRole(null);
     setEmail(null);
   };

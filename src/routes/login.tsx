@@ -17,7 +17,7 @@ function Login() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(role, email || `${role}@chalk.edu`);
+    login(role, email || `${role}@coexist.edu`);
     const dest =
       role === "admin" ? "/admin" : role === "faculty" ? "/faculty" : role === "invigilator" ? "/invigilator" : "/student";
     navigate({ to: dest });
@@ -26,13 +26,13 @@ function Login() {
   return (
     <div className="min-h-screen grid md:grid-cols-2 bg-white">
       <div className="hidden md:flex flex-col justify-between p-12 border-r border-gray-100">
-        <span className="text-xl font-extrabold tracking-tight">CHALK</span>
+        <span className="text-xl font-extrabold tracking-tight">COEXIST</span>
         <div>
           <h1
             className="font-extrabold leading-[0.85]"
             style={{ fontSize: "clamp(4rem, 10vw, 8rem)", letterSpacing: "-4px" }}
           >
-            CHALK
+            COEXIST
           </h1>
           <p className="text-gray-500 mt-4 max-w-[320px] text-[15px] leading-[1.6]">
             The complete exam platform for modern colleges. Sign in to continue.
