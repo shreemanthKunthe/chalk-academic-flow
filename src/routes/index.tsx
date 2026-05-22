@@ -51,7 +51,7 @@ function Landing() {
             <div className="w-14 h-14 bg-white border border-gray-200 shadow-sm flex items-center justify-center mb-8">
               <span className="font-extrabold text-xl tracking-tight">C</span>
             </div>
-            <h1 className="font-bold leading-[1.05] tracking-tight" style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}>
+            <h1 className="font-bold leading-[1.05]" style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", letterSpacing: "-0.04em" }}>
               Assign, attend, and grade
               <br />
               <span className="text-gray-400">every single exam</span>
