@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import { AuthProvider } from "@/context/AuthContext";
+import { UniversityProvider } from "@/context/UniversityContext";
 
 import appCss from "../styles.css?url";
 
