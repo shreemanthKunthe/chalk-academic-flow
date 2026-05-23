@@ -881,7 +881,7 @@ function Landing() {
             </p>
             <Link
               ref={heroBtnRef}
-              to="/login"
+              to="/select-university"
               onMouseEnter={() => handleCursorHoverEnter()}
               onMouseLeave={() => handleCursorHoverLeave()}
               className="mt-8 bg-black text-white px-8 py-3.5 text-sm font-medium hover:bg-black/90 rounded-sm shadow-md transition-all active:scale-95 cursor-pointer relative overflow-hidden group"

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SelectUniversityRouteImport } from './routes/select-university'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvigilatorRouteImport } from './routes/invigilator'
 import { Route as FacultyRouteImport } from './routes/faculty'
@@ -20,6 +21,11 @@ import { Route as AdminHallsRouteImport } from './routes/admin.halls'
 import { Route as AdminExamsRouteImport } from './routes/admin.exams'
 import { Route as AdminSeatingExamIdRouteImport } from './routes/admin.seating.$examId'
 
+const SelectUniversityRoute = SelectUniversityRouteImport.update({
+  id: '/select-university',
+  path: '/select-university',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/faculty': typeof FacultyRoute
   '/invigilator': typeof InvigilatorRoute
   '/login': typeof LoginRoute
+  '/select-university': typeof SelectUniversityRoute
   '/admin/exams': typeof AdminExamsRoute
   '/admin/halls': typeof AdminHallsRoute
   '/student/results': typeof StudentResultsRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/faculty': typeof FacultyRoute
   '/invigilator': typeof InvigilatorRoute
   '/login': typeof LoginRoute
+  '/select-university': typeof SelectUniversityRoute
   '/admin/exams': typeof AdminExamsRoute
   '/admin/halls': typeof AdminHallsRoute
   '/student/results': typeof StudentResultsRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/faculty': typeof FacultyRoute
   '/invigilator': typeof InvigilatorRoute
   '/login': typeof LoginRoute
+  '/select-university': typeof SelectUniversityRoute
   '/admin/exams': typeof AdminExamsRoute
   '/admin/halls': typeof AdminHallsRoute
   '/student/results': typeof StudentResultsRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/faculty'
     | '/invigilator'
     | '/login'
+    | '/select-university'
     | '/admin/exams'
     | '/admin/halls'
     | '/student/results'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/faculty'
     | '/invigilator'
     | '/login'
+    | '/select-university'
     | '/admin/exams'
     | '/admin/halls'
     | '/student/results'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/faculty'
     | '/invigilator'
     | '/login'
+    | '/select-university'
     | '/admin/exams'
     | '/admin/halls'
     | '/student/results'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   FacultyRoute: typeof FacultyRoute
   InvigilatorRoute: typeof InvigilatorRoute
   LoginRoute: typeof LoginRoute
+  SelectUniversityRoute: typeof SelectUniversityRoute
   AdminExamsRoute: typeof AdminExamsRoute
   AdminHallsRoute: typeof AdminHallsRoute
   StudentResultsRoute: typeof StudentResultsRoute
@@ -162,6 +175,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/select-university': {
+      id: '/select-university'
+      path: '/select-university'
+      fullPath: '/select-university'
+      preLoaderRoute: typeof SelectUniversityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   FacultyRoute: FacultyRoute,
   InvigilatorRoute: InvigilatorRoute,
   LoginRoute: LoginRoute,
+  SelectUniversityRoute: SelectUniversityRoute,
   AdminExamsRoute: AdminExamsRoute,
   AdminHallsRoute: AdminHallsRoute,
   StudentResultsRoute: StudentResultsRoute,
@@ -250,13 +271,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
