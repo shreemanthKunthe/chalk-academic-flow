@@ -19,20 +19,20 @@ function AdminDashboard() {
 
   return (
     <AdminShell>
-      <h1 className="text-4xl md:text-5xl font-extrabold uppercase tracking-tight mb-12">Dashboard</h1>
+      <h1 className="text-3xl md:text-5xl font-extrabold uppercase tracking-tight mb-8 md:mb-12">Dashboard</h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12 md:mb-16">
         {stats.map((s) => (
-          <div key={s.label} className="border border-gray-100 p-6 shadow-sm">
-            <div className="text-4xl font-extrabold">{s.value}</div>
+          <div key={s.label} className="border border-gray-100 p-4 md:p-6 shadow-sm">
+            <div className="text-3xl md:text-4xl font-extrabold">{s.value}</div>
             <div className="mt-2 text-[11px] uppercase tracking-widest text-gray-400">{s.label}</div>
           </div>
         ))}
       </div>
 
       <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-4">Recent Exams</h2>
-      <div className="border border-gray-100">
-        <table className="w-full text-sm">
+      <div className="border border-gray-100 overflow-x-auto">
+        <table className="w-full text-sm min-w-[640px]">
           <thead>
             <tr className="text-left text-[11px] uppercase tracking-widest text-gray-400 border-b border-gray-100">
               <th className="px-6 py-4">Exam</th>

@@ -87,11 +87,26 @@ function SelectUniversity() {
         </div>
 
         <div className="max-w-2xl w-full">
-          <h2 className="text-2xl font-extrabold uppercase tracking-tight mb-2">
-            Search universities
-          </h2>
-          <p className="text-[13px] text-gray-500 mb-8">
-            Type your university name, code, city or state.
+          <div className="flex items-start justify-between gap-6 mb-2">
+            <div>
+              <h2 className="text-2xl font-extrabold uppercase tracking-tight mb-2">
+                Search universities
+              </h2>
+              <p className="text-[13px] text-gray-500">
+                Type your university name, code, city or state.
+              </p>
+            </div>
+            <button
+              type="button"
+              disabled={!selected}
+              onClick={() => selected && handleContinue(selected)}
+              className="shrink-0 bg-black text-white py-3 px-5 md:px-6 uppercase tracking-wider text-xs md:text-sm font-medium hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Continue →
+            </button>
+          </div>
+          <p className="text-[11px] uppercase tracking-widest text-gray-400 mb-8">
+            {selected ? `Continuing as ${selected.shortName}` : "Select a university to continue"}
           </p>
 
           {/* Search input */}
@@ -182,22 +197,6 @@ function SelectUniversity() {
             })}
           </div>
 
-          {/* Continue bar */}
-          <div className="mt-12 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
-            <p className="text-[11px] uppercase tracking-widest text-gray-400">
-              {selected
-                ? `Continuing as ${selected.shortName}`
-                : "Select a university to continue"}
-            </p>
-            <button
-              type="button"
-              disabled={!selected}
-              onClick={() => selected && handleContinue(selected)}
-              className="bg-black text-white py-4 px-8 uppercase tracking-wider text-sm font-medium hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Continue to sign in
-            </button>
-          </div>
         </div>
       </main>
     </div>
