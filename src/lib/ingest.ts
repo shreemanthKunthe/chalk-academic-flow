@@ -47,15 +47,16 @@ export const emptyIngestion: Record<SourceId, IngestionRecord> = {
 function detectSource(filename: string, headers: string[]): SourceId | null {
   const fn = filename.toLowerCase();
   const hdr = headers.map((h) => h.toLowerCase());
-  let best: { id: SourceId; score: number } | null = null as { id: SourceId; score: number } | null;
+  let bestId: SourceId | null = null;
+  let bestScore = 0;
   (Object.keys(SCHEMA) as SourceId[]).forEach((id) => {
     const { keywords, required } = SCHEMA[id];
     let score = 0;
     keywords.forEach((k) => { if (fn.includes(k)) score += 2; });
     required.forEach((r) => { if (hdr.some((h) => h.includes(r))) score += 3; });
-    if (!best || score > best.score) best = { id, score };
+    if (score > bestScore) { bestScore = score; bestId = id; }
   });
-  return best && best.score > 0 ? best.id : null;
+  return bestId;
 }
 
 async function readFile(file: File): Promise<{ headers: string[]; rows: Record<string, unknown>[] }> {
