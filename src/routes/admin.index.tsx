@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import AdminShell from "@/components/AdminShell";
 import {
-  ingestionSources,
   constraintRules,
   initialSchedule,
   slotLabels,
   dayLabels,
   ScheduledExam,
 } from "@/data/mockData";
+import { emptyIngestion, parseAndValidate, IngestionRecord, SourceId } from "@/lib/ingest";
 
 export const Route = createFileRoute("/admin/")({
   component: EngineControl,
@@ -20,13 +20,27 @@ function EngineControl() {
   const [dragId, setDragId] = useState<number | null>(null);
   const [hover, setHover] = useState<{ d: number; s: number } | null>(null);
   const [generated, setGenerated] = useState(false);
+  const [sources, setSources] = useState<Record<SourceId, IngestionRecord>>(emptyIngestion);
+  const [busy, setBusy] = useState(false);
+  const [dropActive, setDropActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFiles = async (files: FileList | File[]) => {
+    setBusy(true);
+    const arr = Array.from(files);
+    for (const f of arr) {
+      const rec = await parseAndValidate(f);
+      setSources((prev) => ({ ...prev, [rec.id]: rec }));
+    }
+    setBusy(false);
+  };
 
   const toggleRule = (id: string) =>
     setRules((r) => r.map((x) => (x.id === id ? { ...x, on: !x.on } : x)));
 
   const ready = useMemo(
-    () => ingestionSources.filter((s) => s.status === "ready").length,
-    []
+    () => Object.values(sources).filter((s) => s.status === "ready").length,
+    [sources]
   );
 
   const findAt = (d: number, s: number) =>
