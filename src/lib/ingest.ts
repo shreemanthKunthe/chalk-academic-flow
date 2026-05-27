@@ -47,7 +47,7 @@ export const emptyIngestion: Record<SourceId, IngestionRecord> = {
 function detectSource(filename: string, headers: string[]): SourceId | null {
   const fn = filename.toLowerCase();
   const hdr = headers.map((h) => h.toLowerCase());
-  let best: { id: SourceId; score: number } | null = null;
+  let best: { id: SourceId; score: number } | null = null as { id: SourceId; score: number } | null;
   (Object.keys(SCHEMA) as SourceId[]).forEach((id) => {
     const { keywords, required } = SCHEMA[id];
     let score = 0;
