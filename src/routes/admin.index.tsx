@@ -101,40 +101,70 @@ function EngineControl() {
           01 — Data Ingestion
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6">
-          <div className="border-2 border-dashed border-gray-200 p-8 md:p-10 flex flex-col items-center justify-center text-center hover:border-black transition-colors">
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDropActive(true); }}
+            onDragLeave={() => setDropActive(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDropActive(false);
+              if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files);
+            }}
+            className={`border-2 border-dashed p-8 md:p-10 flex flex-col items-center justify-center text-center transition-colors ${
+              dropActive ? "border-black bg-gray-50" : "border-gray-200 hover:border-black"
+            }`}
+          >
             <div className="text-4xl font-extrabold mb-3">⬆</div>
             <div className="text-sm font-semibold uppercase tracking-wider">
-              Drop CSV / XLSX
+              {busy ? "Parsing…" : "Drop CSV / XLSX"}
             </div>
             <div className="text-xs text-gray-500 mt-2 max-w-xs">
               Drag institutional sheets here — students, rooms, courses, faculty
               availability.
             </div>
-            <button className="mt-6 text-[11px] uppercase tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition-colors">
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept=".csv,.xlsx,.xls"
+              className="hidden"
+              onChange={(e) => e.target.files && handleFiles(e.target.files)}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="mt-6 text-[11px] uppercase tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition-colors"
+            >
               Browse Files
             </button>
           </div>
           <div className="border border-gray-100 divide-y divide-gray-100">
-            {ingestionSources.map((s) => (
-              <div
-                key={s.id}
-                className="flex items-center justify-between px-5 py-4"
-              >
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold">{s.label}</div>
-                  <div className="text-[11px] uppercase tracking-widest text-gray-400 mt-1 truncate">
-                    {s.file} {s.rows ? `· ${s.rows} rows` : ""}
+            {(Object.values(sources) as IngestionRecord[]).map((s) => (
+              <div key={s.id} className="px-5 py-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold">{s.label}</div>
+                    <div className="text-[11px] uppercase tracking-widest text-gray-400 mt-1 truncate">
+                      {s.file} {s.rows ? `· ${s.rows} rows` : ""}
+                    </div>
                   </div>
+                  <span
+                    className={`shrink-0 px-3 py-1 text-[10px] uppercase tracking-widest ${
+                      s.status === "ready"
+                        ? "bg-black text-white"
+                        : s.status === "error"
+                          ? "bg-red-50 text-red-700 border border-red-200"
+                          : "bg-gray-50 text-gray-500 border border-gray-200"
+                    }`}
+                  >
+                    {s.status}
+                  </span>
                 </div>
-                <span
-                  className={`shrink-0 ml-4 px-3 py-1 text-[10px] uppercase tracking-widest ${
-                    s.status === "ready"
-                      ? "bg-black text-white"
-                      : "bg-red-50 text-red-700 border border-red-200"
-                  }`}
-                >
-                  {s.status}
-                </span>
+                {s.errors.length > 0 && (
+                  <ul className="mt-2 text-[11px] text-red-700 list-disc list-inside">
+                    {s.errors.map((err, i) => (
+                      <li key={i}>{err}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
             ))}
           </div>
