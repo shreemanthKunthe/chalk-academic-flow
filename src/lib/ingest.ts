@@ -11,6 +11,7 @@ export type IngestionRecord = {
   status: "ready" | "missing" | "error";
   errors: string[];
   sample: Record<string, unknown>[];
+  data?: Record<string, unknown>[];
 };
 
 // Required columns per source (mock validation schema)
@@ -122,6 +123,7 @@ export async function parseAndValidate(file: File): Promise<IngestionRecord> {
       status: errors.length ? "error" : "ready",
       errors,
       sample: rows.slice(0, 3),
+      data: rows,
     };
   } catch (e) {
     return {
@@ -135,3 +137,57 @@ export async function parseAndValidate(file: File): Promise<IngestionRecord> {
     };
   }
 }
+
+export function downloadTemplate(id: SourceId, format: "csv" | "xlsx") {
+  const schema = SCHEMA[id];
+  if (!schema) return;
+
+  const data: Record<string, string>[] = [];
+  if (id === "students") {
+    data.push({ usn: "CS2101", name: "Arjun Sharma" });
+    data.push({ usn: "CS2102", name: "Priya Nair" });
+    data.push({ usn: "CS2103", name: "Rohit Verma" });
+  } else if (id === "rooms") {
+    data.push({ room: "Hall A", capacity: "30" });
+    data.push({ room: "Hall B", capacity: "25" });
+    data.push({ room: "Hall C", capacity: "40" });
+  } else if (id === "courses") {
+    data.push({ code: "CS301", title: "Data Structures" });
+    data.push({ code: "CS302", title: "Operating Systems" });
+    data.push({ code: "CS303", title: "DBMS" });
+  } else if (id === "faculty") {
+    data.push({ name: "Dr. Ramesh Kumar", available: "Mon, Wed, Fri" });
+    data.push({ name: "Dr. Sunita Rao", available: "Tue, Thu" });
+    data.push({ name: "Prof. Anil Mehta", available: "Mon, Tue, Wed, Thu, Fri" });
+  }
+
+  if (format === "csv") {
+    const headers = schema.required;
+    const csvContent = [
+      headers.join(","),
+      ...data.map((row) => headers.map((h) => `"${row[h] ?? ""}"`).join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${id}_template.csv`);
+    link.click();
+    URL.revokeObjectURL(url);
+  } else if (format === "xlsx") {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, schema.label);
+    
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${id}_template.xlsx`);
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+}
+

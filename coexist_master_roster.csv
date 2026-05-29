@@ -1,0 +1,13 @@
+usn,student_name,department,enrolled_courses
+2GI23CS001,Shreemanth Kunthe,Computer Science,"CS301, CS302, MTH201"
+2GI23CS002,Anirudh K,Computer Science,"CS301, CS303, MTH201"
+2GI23CS003,Raghunandan H,Computer Science,"CS301, CS302, MTH201"
+2GI23CS004,Shreyas K,Computer Science,"CS301, CS303, MTH201"
+2GI23CS005,Rahul Kamath,Electronics,"EC201, EC202, MTH201"
+2GI23CS006,Priya Kulkarni,Electronics,"EC201, EC203, MTH201"
+2GI23CS007,Neha Deshpande,Mechanical,"ME401, ME402, MTH201"
+2GI23CS008,Ganesh Naik,Mechanical,"ME401, ME403, MTH201"
+2GI23CS009,Sneha Patil,Information Technology,"IT301, IT302, MTH201"
+2GI23CS010,Vikram Joshi,Information Technology,"IT301, IT305, MTH201"
+2GI23CS011,Amit Hegde,Civil,"CE101, CE102, MTH201"
+2GI23CS012,Megha Shetty,Civil,"CE101, CE103, MTH201"

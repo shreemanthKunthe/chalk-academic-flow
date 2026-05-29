@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth, Role } from "@/context/AuthContext";
 import { useUniversity } from "@/context/UniversityContext";
+import { useSystemData } from "@/context/SystemDataContext";
 import Logo from "../components/Logo";
 
 export const Route = createFileRoute("/login")({
@@ -15,8 +16,10 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [usn, setUsn] = useState("");
+  const [localError, setLocalError] = useState("");
   const { login } = useAuth();
   const { university } = useUniversity();
+  const { isStudentAccepted } = useSystemData();
   const navigate = useNavigate();
 
   // Require a selected university first
@@ -26,10 +29,30 @@ function Login() {
     }
   }, [university, navigate]);
 
+  // Reset errors when switching roles
+  useEffect(() => {
+    setLocalError("");
+  }, [role]);
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError("");
+
+    if (role === "student") {
+      if (!usn.trim()) {
+        setLocalError("Please enter your USN / Roll Number to log in.");
+        return;
+      }
+      if (!isStudentAccepted(usn)) {
+        setLocalError(`Access Denied: Student USN "${usn}" has not been accepted or registered in the current institutional roster.`);
+        return;
+      }
+    }
+
     const uniSlug = university?.id ?? "coexist";
-    login(role, email || `${role}@${uniSlug}.edu`);
+    const userEmail = email || `${role}@${uniSlug}.edu`;
+    login(role, userEmail, role === "student" ? usn : undefined);
+
     const dest =
       role === "admin"
         ? "/admin"
@@ -103,6 +126,12 @@ function Login() {
               );
             })}
           </div>
+
+          {localError && (
+            <div className="mb-8 p-4 border border-black bg-red-55/40 text-black text-xs font-semibold uppercase tracking-wider leading-relaxed">
+              <span className="text-red-600 font-bold mr-1.5">⚠️ ERROR:</span> {localError}
+            </div>
+          )}
 
           <div className="space-y-8">
             {role === "student" && (

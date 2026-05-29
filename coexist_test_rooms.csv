@@ -1,0 +1,6 @@
+room_id,room_name,capacity,building
+LH101,Lecture Hall 101,40,Main Block
+LH102,Lecture Hall 102,40,Main Block
+LH201,Lecture Hall 201,30,Science Wing
+AUD01,Main Auditorium,150,Admin Block
+CSLAB,Computing Lab 01,60,IT Center

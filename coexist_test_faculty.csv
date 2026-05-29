@@ -1,0 +1,7 @@
+faculty_id,faculty_name,department,unavailable_dates,assigned_courses
+FAC101,Dr. Ramesh Rao,Computer Science,2026-06-02,"CS301, CS302"
+FAC102,Prof. Savita Patil,Computer Science,None,CS303
+FAC103,Dr. Amit Verma,Electronics,2026-06-05,"EC201, EC202"
+FAC104,Prof. Kiran Kumar,Mechanical,"2026-06-02, 2026-06-03",ME401
+FAC105,Dr. Ravi Naik,Information Technology,None,IT301
+FAC106,Prof. Lakshmi Hegde,Mathematics,2026-06-04,MTH201

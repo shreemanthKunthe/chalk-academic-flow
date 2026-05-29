@@ -10,6 +10,7 @@ import {
 
 import { AuthProvider } from "@/context/AuthContext";
 import { UniversityProvider } from "@/context/UniversityContext";
+import { SystemDataProvider } from "@/context/SystemDataContext";
 
 import appCss from "../styles.css?url";
 
@@ -121,9 +122,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <UniversityProvider>
-        <AuthProvider>
-          <Outlet />
-        </AuthProvider>
+        <SystemDataProvider>
+          <AuthProvider>
+            <Outlet />
+          </AuthProvider>
+        </SystemDataProvider>
       </UniversityProvider>
     </QueryClientProvider>
   );

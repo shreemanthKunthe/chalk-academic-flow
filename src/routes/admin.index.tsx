@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AdminShell from "@/components/AdminShell";
 import {
   constraintRules,
@@ -8,22 +8,81 @@ import {
   dayLabels,
   ScheduledExam,
 } from "@/data/mockData";
-import { emptyIngestion, parseAndValidate, IngestionRecord, SourceId } from "@/lib/ingest";
+import { emptyIngestion, parseAndValidate, IngestionRecord, SourceId, downloadTemplate } from "@/lib/ingest";
+import { useSystemData } from "@/context/SystemDataContext";
 
 export const Route = createFileRoute("/admin/")({
   component: EngineControl,
 });
 
 function EngineControl() {
+  const {
+    schedule,
+    updateSchedule,
+    setIngestedData,
+    students,
+    rooms,
+    courses,
+    faculty,
+    hasCustomRoster,
+    resetAllData
+  } = useSystemData();
+
   const [rules, setRules] = useState(constraintRules);
-  const [schedule, setSchedule] = useState<ScheduledExam[]>(initialSchedule);
   const [dragId, setDragId] = useState<number | null>(null);
   const [hover, setHover] = useState<{ d: number; s: number } | null>(null);
   const [generated, setGenerated] = useState(false);
-  const [sources, setSources] = useState<Record<SourceId, IngestionRecord>>(emptyIngestion);
   const [busy, setBusy] = useState(false);
   const [dropActive, setDropActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const initialSources = useMemo(() => {
+    return {
+      students: {
+        id: "students" as const,
+        label: "Student Roster",
+        file: hasCustomRoster ? "persisted_roster.csv" : "students_2026.csv",
+        rows: students.length,
+        status: "ready" as const,
+        errors: [],
+        sample: students.slice(0, 3).map(s => ({ usn: s.usn, name: s.name }))
+      },
+      rooms: {
+        id: "rooms" as const,
+        label: "Rooms & Halls",
+        file: hasCustomRoster ? "persisted_rooms.xlsx" : "halls.xlsx",
+        rows: rooms.length,
+        status: "ready" as const,
+        errors: [],
+        sample: rooms.slice(0, 3)
+      },
+      courses: {
+        id: "courses" as const,
+        label: "Course Catalog",
+        file: hasCustomRoster ? "persisted_courses.csv" : "courses_sem6.csv",
+        rows: courses.length,
+        status: "ready" as const,
+        errors: [],
+        sample: courses.slice(0, 3)
+      },
+      faculty: {
+        id: "faculty" as const,
+        label: "Faculty Availability",
+        file: hasCustomRoster ? "persisted_faculty.csv" : "—",
+        rows: faculty.length,
+        status: hasCustomRoster ? ("ready" as const) : ("missing" as const),
+        errors: [],
+        sample: faculty.slice(0, 3)
+      }
+    };
+  }, [students, rooms, courses, faculty, hasCustomRoster]);
+
+  const [sources, setSources] = useState<Record<SourceId, IngestionRecord>>(initialSources);
+
+  // Sync sources with initial sources whenever context datasets are updated
+  useEffect(() => {
+    setSources(initialSources);
+  }, [initialSources]);
 
   const handleFiles = async (files: FileList | File[]) => {
     setBusy(true);
@@ -31,6 +90,11 @@ function EngineControl() {
     for (const f of arr) {
       const rec = await parseAndValidate(f);
       setSources((prev) => ({ ...prev, [rec.id]: rec }));
+      
+      // Update global persistent data context
+      if (rec.status === "ready" && rec.data) {
+        setIngestedData(rec.id, rec.data);
+      }
     }
     setBusy(false);
   };
@@ -56,11 +120,31 @@ function EngineControl() {
       setHover(null);
       return;
     }
-    setSchedule((arr) =>
-      arr.map((e) => (e.id === dragId ? { ...e, day: d, slot: s } : e))
-    );
+    const newSchedule = schedule.map((e) => (e.id === dragId ? { ...e, day: d, slot: s } : e));
+    updateSchedule(newSchedule);
     setDragId(null);
     setHover(null);
+  };
+
+  const generateNewSchedule = () => {
+    setGenerated(true);
+    if (courses.length > 0 && rooms.length > 0) {
+      const newSchedule: ScheduledExam[] = [];
+      courses.forEach((c, idx) => {
+        const day = idx % 5;
+        const slot = Math.floor(idx / 5) % 3;
+        const roomObj = rooms[idx % rooms.length];
+        newSchedule.push({
+          id: idx + 1,
+          code: c.code,
+          title: c.title,
+          day,
+          slot,
+          hall: roomObj.room
+        });
+      });
+      updateSchedule(newSchedule);
+    }
   };
 
   return (
@@ -142,8 +226,23 @@ function EngineControl() {
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0">
                     <div className="text-sm font-semibold">{s.label}</div>
-                    <div className="text-[11px] uppercase tracking-widest text-gray-400 mt-1 truncate">
-                      {s.file} {s.rows ? `· ${s.rows} rows` : ""}
+                    <div className="text-[11px] uppercase tracking-widest text-gray-400 mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span>{s.file === "—" ? "No file" : s.file} {s.rows ? `· ${s.rows} rows` : ""}</span>
+                      <span className="text-gray-300">|</span>
+                      <span className="text-gray-500 font-sans lowercase">Template:</span>
+                      <button
+                        onClick={() => downloadTemplate(s.id, "csv")}
+                        className="text-black font-semibold hover:underline cursor-pointer font-sans lowercase"
+                      >
+                        csv
+                      </button>
+                      <span className="text-gray-300">·</span>
+                      <button
+                        onClick={() => downloadTemplate(s.id, "xlsx")}
+                        className="text-black font-semibold hover:underline cursor-pointer font-sans lowercase"
+                      >
+                        excel
+                      </button>
                     </div>
                   </div>
                   <span
@@ -217,14 +316,28 @@ function EngineControl() {
         <h2 className="text-[11px] uppercase tracking-widest text-gray-400 mb-4">
           03 — Execute
         </h2>
-        <button
-          onClick={() => setGenerated(true)}
-          className="group w-full md:w-auto bg-black text-white px-10 py-6 uppercase tracking-widest text-sm font-bold hover:bg-gray-900 transition-all flex items-center gap-4"
-        >
-          <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-          {generated ? "Regenerate Timetable" : "Generate Timetable"}
-          <span className="group-hover:translate-x-1 transition-transform">→</span>
-        </button>
+        <div className="flex flex-wrap gap-4">
+          <button
+            onClick={generateNewSchedule}
+            className="group w-full md:w-auto bg-black text-white px-10 py-6 uppercase tracking-widest text-sm font-bold hover:bg-gray-900 transition-all flex items-center gap-4"
+          >
+            <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+            {generated ? "Regenerate Timetable" : "Generate Timetable"}
+            <span className="group-hover:translate-x-1 transition-transform">→</span>
+          </button>
+          
+          {hasCustomRoster && (
+            <button
+              onClick={() => {
+                resetAllData();
+                window.location.reload();
+              }}
+              className="w-full md:w-auto border border-red-200 text-red-700 bg-red-50/50 hover:bg-red-50 hover:text-red-800 px-6 py-4 uppercase tracking-widest text-xs font-bold transition-all"
+            >
+              Reset Ingested Datasets
+            </button>
+          )}
+        </div>
         {generated && (
           <div className="mt-3 text-[11px] uppercase tracking-widest text-gray-500">
             Solved in 1.84s · 0 hard conflicts · 2 soft preferences relaxed
