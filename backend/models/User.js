@@ -1,43 +1,41 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // ============ USER SCHEMA DEFINITION ============
 
 /**
- * User Schema - Stores user information for authentication
+ * User Schema - Stores user session profiles for authentication
  * Fields:
- *   - name: User's full name
- *   - email: Unique email address for login
- *   - password: Hashed password (never stored in plain text)
- *   - role: User's role determining access levels (Admin, Faculty, Invigilator, Student)
+ *   - name: User's name
+ *   - email: Email address (unique, sparse to allow students without emails)
+ *   - role: User's role (Admin, Faculty, Invigilator, Student)
+ *   - usn: Student's Roll Number (unique, sparse, uppercase)
  */
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please provide a user name'],
+    required: [true, 'Please provide a name'],
     trim: true
   },
   email: {
     type: String,
-    required: [true, 'Please provide an email'],
-    unique: true,
     lowercase: true,
+    sparse: true, // Allows multiple users without emails (e.g., student-only sign-ins)
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       'Please provide a valid email'
     ]
   },
-  password: {
-    type: String,
-    required: [true, 'Please provide a password'],
-    minlength: 6,
-    select: false  // Don't return password by default in queries
-  },
   role: {
     type: String,
     enum: ['Admin', 'Faculty', 'Invigilator', 'Student'],
-    default: 'Student'
+    required: [true, 'Please specify a user role']
+  },
+  usn: {
+    type: String,
+    sparse: true, // Allows non-students (Admins, Faculty) to not have a USN
+    uppercase: true,
+    trim: true
   },
   createdAt: {
     type: Date,
@@ -45,50 +43,15 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// ============ PRE-SAVE HOOK FOR PASSWORD HASHING ============
-
-/**
- * Hash password before saving to database
- * Only hash if password is new or modified (not on every save)
- * Uses bcrypt with salt rounds of 10 for security
- */
-userSchema.pre('save', async function(next) {
-  // Only hash password if it's new or has been modified
-  if (!this.isModified('password')) {
-    return next();
-  }
-
-  try {
-    // Generate salt and hash password
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
 // ============ INSTANCE METHODS ============
 
 /**
- * Compare provided password with hashed password in database
- * Used during login to verify user credentials
- * @param {string} enteredPassword - The password provided by user at login
- * @returns {boolean} True if passwords match, false otherwise
- */
-userSchema.methods.comparePassword = async function(enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
-/**
- * Generate JWT token for authenticated user
- * Token expires in 7 days and contains user ID
- * Used for subsequent API requests after login
- * @returns {string} Signed JWT token
+ * Generate JWT token for authenticated user sessions
+ * Token contains both the user ID and role for downstream access control
  */
 userSchema.methods.getJWTToken = function() {
   return jwt.sign(
-    { id: this._id },
+    { id: this._id, role: this.role },
     process.env.JWT_SECRET || 'your-secret-key-change-in-production',
     { expiresIn: '7d' }
   );
